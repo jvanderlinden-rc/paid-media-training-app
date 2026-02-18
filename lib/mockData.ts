@@ -1,4 +1,4 @@
-import { Module, Section, ReportRow } from "./types";
+import { Module, Section, ReportRow, AttemptHistoryRow } from "./types";
 
 export const sections: Section[] = [
   {
@@ -71,6 +71,15 @@ export const modules: Module[] = [
         }
       },
       {
+        id: "c3b",
+        type: "media",
+        data: {
+          kind: "video",
+          url: "/sample-walkthrough.mp4",
+          caption: "Replace with your internal walkthrough video."
+        }
+      },
+      {
         id: "c4",
         type: "table",
         data: {
@@ -128,6 +137,7 @@ export const modules: Module[] = [
           { id: "c", label: "Reporting" }
         ],
         multi: false,
+        correct: ["b"],
         points: 10
       }
     ]
@@ -145,6 +155,15 @@ export const modules: Module[] = [
         type: "text",
         data: {
           text: "Signal hygiene means ensuring events, UTMs, and naming conventions stay consistent."
+        }
+      },
+      {
+        id: "c5b",
+        type: "media",
+        data: {
+          kind: "audio",
+          url: "/sample-audio.mp3",
+          caption: "Replace with your internal audio briefing."
         }
       },
       {
@@ -175,6 +194,7 @@ export const modules: Module[] = [
         kind: "short_text",
         prompt: "List one reason to standardize naming conventions.",
         placeholder: "Your answer...",
+        acceptable: ["clarity", "consistency", "reporting", "attribution"],
         points: 10
       }
     ]
@@ -195,5 +215,18 @@ export const reportRows: ReportRow[] = [
     averageScore: 88,
     passCount: 17,
     failCount: 2
+  }
+];
+
+export const attemptHistory: AttemptHistoryRow[] = [
+  {
+    id: "attempt-1",
+    userLabel: "Demo User",
+    targetLabel: "Paid Media System Map",
+    kind: "MODULE_TEST",
+    score: 10,
+    maxScore: 10,
+    passed: true,
+    createdAt: "2026-02-18T02:30:00.000Z"
   }
 ];

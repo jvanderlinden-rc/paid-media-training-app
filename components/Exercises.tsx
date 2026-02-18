@@ -3,7 +3,13 @@
 import { useMemo, useState } from "react";
 import { Exercise, Question } from "@/lib/types";
 
-function McqExercise({ exercise }: { exercise: Exercise & { kind: "mcq" } }) {
+function McqExercise({
+  exercise,
+  onChange
+}: {
+  exercise: Exercise & { kind: "mcq" };
+  onChange?: (value: string[]) => void;
+}) {
   const [selected, setSelected] = useState<string[]>([]);
 
   return (
@@ -20,13 +26,16 @@ function McqExercise({ exercise }: { exercise: Exercise & { kind: "mcq" } }) {
                 checked={checked}
                 onChange={() => {
                   if (exercise.multi) {
-                    setSelected((prev) =>
-                      prev.includes(option.id)
+                    setSelected((prev) => {
+                      const next = prev.includes(option.id)
                         ? prev.filter((id) => id !== option.id)
-                        : [...prev, option.id]
-                    );
+                        : [...prev, option.id];
+                      onChange?.(next);
+                      return next;
+                    });
                   } else {
                     setSelected([option.id]);
+                    onChange?.([option.id]);
                   }
                 }}
               />
@@ -39,7 +48,13 @@ function McqExercise({ exercise }: { exercise: Exercise & { kind: "mcq" } }) {
   );
 }
 
-function ShortTextExercise({ exercise }: { exercise: Exercise & { kind: "short_text" } }) {
+function ShortTextExercise({
+  exercise,
+  onChange
+}: {
+  exercise: Exercise & { kind: "short_text" };
+  onChange?: (value: string) => void;
+}) {
   const [text, setText] = useState("");
   return (
     <div className="exercise">
@@ -48,14 +63,23 @@ function ShortTextExercise({ exercise }: { exercise: Exercise & { kind: "short_t
         rows={3}
         placeholder={exercise.placeholder}
         value={text}
-        onChange={(event) => setText(event.target.value)}
+        onChange={(event) => {
+          setText(event.target.value);
+          onChange?.(event.target.value);
+        }}
       />
       <div className="notice">Your answer is stored when you submit the module test.</div>
     </div>
   );
 }
 
-function DragDropExercise({ exercise }: { exercise: Exercise & { kind: "drag_drop" } }) {
+function DragDropExercise({
+  exercise,
+  onChange
+}: {
+  exercise: Exercise & { kind: "drag_drop" };
+  onChange?: (value: Record<string, string | null>) => void;
+}) {
   const [assignments, setAssignments] = useState<Record<string, string | null>>(
     Object.fromEntries(exercise.items.map((item) => [item.id, null]))
   );
@@ -92,7 +116,11 @@ function DragDropExercise({ exercise }: { exercise: Exercise & { kind: "drag_dro
               event.preventDefault();
               const itemId = event.dataTransfer.getData("text/plain");
               if (!itemId) return;
-              setAssignments((prev) => ({ ...prev, [itemId]: bucket.id }));
+              setAssignments((prev) => {
+                const next = { ...prev, [itemId]: bucket.id };
+                onChange?.(next);
+                return next;
+              });
             }}
           >
             <strong>{bucket.label}</strong>
@@ -121,6 +149,54 @@ export default function Exercises({ title, items }: { title: string; items: Exer
             return <ShortTextExercise key={exercise.id} exercise={exercise} />;
           case "drag_drop":
             return <DragDropExercise key={exercise.id} exercise={exercise} />;
+          default:
+            return null;
+        }
+      })}
+    </div>
+  );
+}
+
+export type AnswerValue =
+  | { kind: "mcq"; value: string[] }
+  | { kind: "short_text"; value: string }
+  | { kind: "drag_drop"; value: Record<string, string | null> };
+
+export function TestRenderer({
+  items,
+  onAnswer
+}: {
+  items: Question[];
+  onAnswer: (id: string, answer: AnswerValue) => void;
+}) {
+  return (
+    <div className="stack">
+      {items.map((exercise) => {
+        switch (exercise.kind) {
+          case "mcq":
+            return (
+              <McqExercise
+                key={exercise.id}
+                exercise={exercise}
+                onChange={(value) => onAnswer(exercise.id, { kind: "mcq", value })}
+              />
+            );
+          case "short_text":
+            return (
+              <ShortTextExercise
+                key={exercise.id}
+                exercise={exercise}
+                onChange={(value) => onAnswer(exercise.id, { kind: "short_text", value })}
+              />
+            );
+          case "drag_drop":
+            return (
+              <DragDropExercise
+                key={exercise.id}
+                exercise={exercise}
+                onChange={(value) => onAnswer(exercise.id, { kind: "drag_drop", value })}
+              />
+            );
           default:
             return null;
         }

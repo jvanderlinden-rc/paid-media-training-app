@@ -1,7 +1,7 @@
-import { getReports } from "@/lib/data";
+import { getAttemptHistory, getReports } from "@/lib/data";
 
 export default async function ReportsPage() {
-  const rows = await getReports();
+  const [rows, attempts] = await Promise.all([getReports(), getAttemptHistory()]);
 
   return (
     <main>
@@ -28,6 +28,37 @@ export default async function ReportsPage() {
               <td>{Math.round(row.averageScore)}%</td>
               <td>{row.passCount}</td>
               <td>{row.failCount}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div className="section-title" style={{ marginTop: 32 }}>
+        <span className="pill">Attempts</span>
+        <h2>Recent Test History</h2>
+      </div>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Module/Level</th>
+            <th>Type</th>
+            <th>Score</th>
+            <th>Passed</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {attempts.map((attempt) => (
+            <tr key={attempt.id}>
+              <td>{attempt.userLabel}</td>
+              <td>{attempt.targetLabel}</td>
+              <td>{attempt.kind}</td>
+              <td>
+                {attempt.score}/{attempt.maxScore}
+              </td>
+              <td>{attempt.passed ? "Yes" : "No"}</td>
+              <td>{new Date(attempt.createdAt).toLocaleString()}</td>
             </tr>
           ))}
         </tbody>

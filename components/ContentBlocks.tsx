@@ -20,6 +20,22 @@ export default function ContentBlocks({ blocks }: { blocks: ContentBlock[] }) {
                 <div>{block.data.mermaid}</div>
               </div>
             );
+          case "media":
+            return (
+              <div key={block.id} className="card">
+                <strong>{block.data.kind === "video" ? "Video" : "Audio"} walkthrough</strong>
+                {block.data.kind === "video" ? (
+                  <video controls style={{ width: "100%", marginTop: 12 }}>
+                    <source src={block.data.url} />
+                  </video>
+                ) : (
+                  <audio controls style={{ width: "100%", marginTop: 12 }}>
+                    <source src={block.data.url} />
+                  </audio>
+                )}
+                {block.data.caption && <div className="notice">{block.data.caption}</div>}
+              </div>
+            );
           case "table":
             return (
               <table key={block.id} className="table">

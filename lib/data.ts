@@ -1,6 +1,6 @@
 import { prisma } from "./prisma";
-import { modules as mockModules, reportRows, sections as mockSections } from "./mockData";
-import { Module, Section, ReportRow } from "./types";
+import { attemptHistory, modules as mockModules, reportRows, sections as mockSections } from "./mockData";
+import { Module, Section, ReportRow, AttemptHistoryRow } from "./types";
 
 const dbAvailable = Boolean(process.env.DATABASE_URL);
 
@@ -128,5 +128,29 @@ export async function getReports(): Promise<ReportRow[]> {
     }));
   } catch {
     return reportRows;
+  }
+}
+
+export async function getAttemptHistory(): Promise<AttemptHistoryRow[]> {
+  if (!dbAvailable) return attemptHistory;
+  try {
+    const attempts = await prisma.attempt.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 50,
+      include: { user: true, module: true, section: true }
+    });
+
+    return attempts.map((attempt) => ({
+      id: attempt.id,
+      userLabel: attempt.user.name ?? attempt.user.email,
+      targetLabel: attempt.module?.title ?? attempt.section?.title ?? "Unknown",
+      kind: attempt.kind,
+      score: attempt.score,
+      maxScore: attempt.maxScore,
+      passed: attempt.passed,
+      createdAt: attempt.createdAt.toISOString()
+    }));
+  } catch {
+    return attemptHistory;
   }
 }

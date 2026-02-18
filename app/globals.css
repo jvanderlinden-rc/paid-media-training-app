@@ -134,6 +134,11 @@ header {
   color: var(--ink);
 }
 
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .stack {
   display: grid;
   gap: 16px;
@@ -239,4 +244,47 @@ select {
   margin-top: 48px;
   font-size: 12px;
   color: var(--muted);
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.breadcrumb-item::after {
+  content: "/";
+  margin-left: 8px;
+}
+
+.breadcrumb-item:last-child::after {
+  content: "";
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(31, 29, 26, 0.45);
+  display: grid;
+  place-items: center;
+  z-index: 50;
+}
+
+.modal {
+  background: #fffaf2;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  width: min(420px, 90vw);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
 }

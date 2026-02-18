@@ -22,6 +22,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ status: "ok", attemptId: "mock-attempt" });
   }
 
+  await prisma.user.upsert({
+    where: { id: userId },
+    update: {},
+    create: { id: userId, email: `${userId}@local` }
+  });
+
   const attempt = await prisma.attempt.create({
     data: {
       userId,

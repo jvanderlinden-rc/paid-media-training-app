@@ -142,4 +142,7 @@ model Progress {
   status       ProgressStatus @default(NOT_STARTED)
   highestScore Int            @default(0)
   updatedAt    DateTime       @updatedAt
+
+  @@unique([userId, moduleId])
+  @@unique([userId, sectionId])
 }
