@@ -12,6 +12,11 @@ enum Role {
   ADMIN
 }
 
+enum ModuleStatus {
+  DRAFT
+  PUBLISHED
+}
+
 enum AttemptKind {
   MODULE_TEST
   SECTION_EXAM
@@ -56,6 +61,7 @@ model Module {
   description  String
   order        Int
   passingScore Int            @default(80)
+  status       ModuleStatus   @default(DRAFT)
   blocks       ContentBlock[]
   exercises    Exercise[]
   questions    Question[]

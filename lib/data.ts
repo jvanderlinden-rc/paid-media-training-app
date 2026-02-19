@@ -27,7 +27,7 @@ export async function getModulesBySection(sectionId: string): Promise<Module[]> 
   if (!dbAvailable) return mockModules.filter((m) => m.sectionId === sectionId);
   try {
     const rows = await prisma.module.findMany({
-      where: { sectionId },
+      where: { sectionId, status: "PUBLISHED" },
       orderBy: { order: "asc" },
       include: { blocks: true, exercises: true, questions: true }
     });
@@ -69,7 +69,7 @@ export async function getModuleById(moduleId: string): Promise<Module | null> {
       where: { id: moduleId },
       include: { blocks: true, exercises: true, questions: true }
     });
-    if (!row) return null;
+    if (!row || row.status !== "PUBLISHED") return null;
     return {
       id: row.id,
       sectionId: row.sectionId,

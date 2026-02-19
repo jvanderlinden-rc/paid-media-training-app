@@ -52,7 +52,8 @@ async function main() {
         title: module.title,
         description: module.description,
         order: module.order,
-        passingScore: module.passingScore
+        passingScore: module.passingScore,
+        status: "PUBLISHED"
       },
       create: {
         id: module.id,
@@ -60,7 +61,8 @@ async function main() {
         title: module.title,
         description: module.description,
         order: module.order,
-        passingScore: module.passingScore
+        passingScore: module.passingScore,
+        status: "PUBLISHED"
       }
     });
 

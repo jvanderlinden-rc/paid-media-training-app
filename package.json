@@ -10,13 +10,16 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "node -r ts-node/register/transpile-only prisma/seed.ts"
+    "prisma:seed": "node -r ts-node/register/transpile-only prisma/seed.ts",
+    "import:modules": "node -r ts-node/register/transpile-only scripts/import-modules.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.15.0",
+    "gray-matter": "^4.0.3",
     "next": "^14.2.5",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "yaml": "^2.4.5"
   },
   "devDependencies": {
     "@types/node": "^20.11.30",
